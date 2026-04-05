@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="StudentEnrollmentReport"
+              pageWidth="842" pageHeight="595" orientation="Landscape"
+              columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <!-- ========== Styles ========== -->
+    <style name="Title" fontSize="20" isBold="true" forecolor="#1A237E"/>
+    <style name="Subtitle" fontSize="11" forecolor="#546E7A"/>
+    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#FFFFFF" backcolor="#1565C0" hAlign="Center" vAlign="Middle"/>
+    <style name="Detail" fontSize="9" forecolor="#333333"/>
+    <style name="DetailAlt" fontSize="9" forecolor="#333333" backcolor="#E3F2FD"/>
+    <style name="Footer" fontSize="8" forecolor="#78909C"/>
+    <style name="SummaryLabel" fontSize="11" isBold="true" forecolor="#1A237E"/>
+    <style name="SummaryValue" fontSize="11" isBold="true" forecolor="#1565C0"/>
+
+    <!-- ========== Fields ========== -->
+    <field name="enrollment_id" class="java.lang.Integer"/>
+    <field name="student_code" class="java.lang.String"/>
+    <field name="student_name" class="java.lang.String"/>
+    <field name="gender" class="java.lang.String"/>
+    <field name="phone" class="java.lang.String"/>
+    <field name="email" class="java.lang.String"/>
+    <field name="course_code" class="java.lang.String"/>
+    <field name="course_name" class="java.lang.String"/>
+    <field name="teacher_name" class="java.lang.String"/>
+    <field name="enrollment_date" class="java.sql.Date"/>
+    <field name="payment_status" class="java.lang.String"/>
+    <field name="payment_amount" class="java.math.BigDecimal"/>
+    <field name="course_fee" class="java.math.BigDecimal"/>
+    <field name="completion_status" class="java.lang.String"/>
+    <field name="progress_percentage" class="java.math.BigDecimal"/>
+    <field name="final_grade" class="java.lang.String"/>
+    <field name="certificate_issued" class="java.lang.Boolean"/>
+    <field name="certificate_number" class="java.lang.String"/>
+    <field name="institute_name" class="java.lang.String"/>
+
+    <!-- ========== Title Band ========== -->
+    <title>
+        <band height="80">
+            <!-- Top accent line -->
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#1565C0"/>
+            </rectangle>
+            <!-- Institute name -->
+            <textField>
+                <reportElement x="20" y="12" width="500" height="20" forecolor="#546E7A"/>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{institute_name} != null ? $F{institute_name} : "Training System"]]></textFieldExpression>
+            </textField>
+            <!-- Report title -->
+            <textField>
+                <reportElement x="20" y="32" width="600" height="30" forecolor="#1A237E"/>
+                <textElement>
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Student Enrollment Report"]]></textFieldExpression>
+            </textField>
+            <!-- Generation date -->
+            <textField pattern="dd MMMM yyyy, HH:mm">
+                <reportElement x="580" y="38" width="200" height="20" forecolor="#78909C"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <!-- Separator line -->
+            <line>
+                <reportElement x="20" y="68" width="762" height="1" forecolor="#B0BEC5"/>
+            </line>
+        </band>
+    </title>
+
+    <!-- ========== Page Header (Column Titles) ========== -->
+    <pageHeader>
+        <band height="22">
+            <staticText>
+                <reportElement style="ColumnHeader" x="0" y="0" width="30" height="22"/>
+                <text><![CDATA[#]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="30" y="0" width="55" height="22"/>
+                <text><![CDATA[Code]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="85" y="0" width="110" height="22"/>
+                <text><![CDATA[Student Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="195" y="0" width="35" height="22"/>
+                <text><![CDATA[G]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="230" y="0" width="110" height="22"/>
+                <text><![CDATA[Course]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="340" y="0" width="80" height="22"/>
+                <text><![CDATA[Instructor]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="420" y="0" width="60" height="22"/>
+                <text><![CDATA[Enroll Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="480" y="0" width="55" height="22"/>
+                <text><![CDATA[Payment]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="535" y="0" width="55" height="22"/>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="590" y="0" width="60" height="22"/>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="650" y="0" width="50" height="22"/>
+                <text><![CDATA[Progress]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="700" y="0" width="35" height="22"/>
+                <text><![CDATA[Grade]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="735" y="0" width="67" height="22"/>
+                <text><![CDATA[Certificate]]></text>
+            </staticText>
+        </band>
+    </pageHeader>
+
+    <!-- ========== Detail ========== -->
+    <detail>
+        <band height="18">
+            <!-- Alternating background -->
+            <rectangle>
+                <reportElement style="DetailAlt" x="0" y="0" width="802" height="18">
+                    <printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+                </reportElement>
+            </rectangle>
+            <!-- Row number -->
+            <textField>
+                <reportElement style="Detail" x="0" y="0" width="30" height="18"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="30" y="0" width="55" height="18"/>
+                <textFieldExpression><![CDATA[$F{student_code}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="85" y="0" width="110" height="18"/>
+                <textFieldExpression><![CDATA[$F{student_name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="195" y="0" width="35" height="18"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="230" y="0" width="110" height="18"/>
+                <textFieldExpression><![CDATA[$F{course_code} + " - " + $F{course_name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="340" y="0" width="80" height="18"/>
+                <textFieldExpression><![CDATA[$F{teacher_name} != null ? $F{teacher_name} : "-"]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement style="Detail" x="420" y="0" width="60" height="18"/>
+                <textFieldExpression><![CDATA[$F{enrollment_date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="480" y="0" width="55" height="18"/>
+                <textFieldExpression><![CDATA[$F{payment_status}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement style="Detail" x="535" y="0" width="55" height="18"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{payment_amount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="590" y="0" width="60" height="18"/>
+                <textFieldExpression><![CDATA[$F{completion_status}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#0.0'%'">
+                <reportElement style="Detail" x="650" y="0" width="50" height="18"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{progress_percentage}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="700" y="0" width="35" height="18"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{final_grade} != null ? $F{final_grade} : "-"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Detail" x="735" y="0" width="67" height="18"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{certificate_issued} ? "Issued" : "Pending"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- ========== Page Footer ========== -->
+    <pageFooter>
+        <band height="25">
+            <line>
+                <reportElement x="0" y="0" width="802" height="1" forecolor="#B0BEC5"/>
+            </line>
+            <textField>
+                <reportElement style="Footer" x="0" y="4" width="400" height="16"/>
+                <textFieldExpression><![CDATA["Generated: " + new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="Footer" x="400" y="4" width="402" height="16"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <!-- ========== Summary ========== -->
+    <summary>
+        <band height="35">
+            <line>
+                <reportElement x="20" y="0" width="762" height="1" forecolor="#B0BEC5"/>
+            </line>
+            <staticText>
+                <reportElement style="SummaryLabel" x="20" y="6" width="120" height="18"/>
+                <text><![CDATA[Total Enrollments:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="SummaryValue" x="145" y="6" width="40" height="18"/>
+                <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
