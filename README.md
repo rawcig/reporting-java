@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Reporting Project - Setup & Running Instructions
 
 ## Prerequisites
@@ -179,3 +180,6 @@ run.bat
 ```
 
 All tests should show `[PASS]` for every report.
+=======
+# reporting-java
+>>>>>>> cb6b7bb1cb9df4c3265e9d5c7e6685336499dbbb
