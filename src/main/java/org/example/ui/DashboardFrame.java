@@ -8,6 +8,8 @@ import org.example.util.DBConnection;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import javax.swing.KeyStroke;
+import javax.swing.AbstractAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,6 +145,36 @@ public class DashboardFrame extends JFrame {
 
         add(mainPanel);
         getRootPane().setDefaultButton(generateBtn);
+        
+        // Add F5 keyboard shortcut for Generate
+        KeyStroke f5 = KeyStroke.getKeyStroke("F5");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(f5, "generateReport");
+        getRootPane().getActionMap().put("generateReport", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                generateReport();
+            }
+        });
+        
+        // Add Ctrl+F for Filter dialog
+        KeyStroke ctrlF = KeyStroke.getKeyStroke("ctrl F");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ctrlF, "openFilter");
+        getRootPane().getActionMap().put("openFilter", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                openFilterDialog();
+            }
+        });
+        
+        // Add Escape to clear filters
+        KeyStroke escape = KeyStroke.getKeyStroke("ESCAPE");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escape, "clearFilters");
+        getRootPane().getActionMap().put("clearFilters", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                clearFilters();
+            }
+        });
     }
 
     private void openFilterDialog() {
@@ -301,6 +333,16 @@ public class DashboardFrame extends JFrame {
             this.jasperPrint = jasperPrint;
             this.errorMessage = errorMessage;
         }
+    }
+
+    private void clearFilters() {
+        activeFilters.clear();
+        ReportType selected = (ReportType) reportCombo.getSelectedItem();
+        if (selected != null) {
+            updateFilterSummary(selected);
+        }
+        statusLabel.setText("Filters cleared");
+        statusLabel.setForeground(new Color(130, 130, 130));
     }
 
     /**

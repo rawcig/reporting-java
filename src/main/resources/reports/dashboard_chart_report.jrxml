@@ -1,0 +1,304 @@
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="DashboardChartReport"
+              pageWidth="842" pageHeight="1195" orientation="Portrait"
+              columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <!-- ========== Styles ========== -->
+    <style name="Title" fontSize="22" isisBold="true" forecolor="#1E293B"/>
+    <style name="Footer" fontSize="8" forecolor="#94A3B8"/>
+    <style name="ChartTitle" fontSize="12" isisBold="true" forecolor="#1E293B"/>
+    <style name="SummaryLabel" fontSize="11" isisBold="true" forecolor="#64748B"/>
+    <style name="SummaryValue" fontSize="16" isisBold="true" forecolor="#2563EB"/>
+
+    <!-- ========== Fields ========== -->
+    <field name="institute_name" class="java.lang.String"/>
+    <field name="course_name" class="java.lang.String"/>
+    <field name="skill_level" class="java.lang.String"/>
+    <field name="status" class="java.lang.String"/>
+    <field name="total_students" class="java.lang.Long"/>
+    <field name="completed_students" class="java.lang.Long"/>
+    <field name="avg_progress" class="java.math.BigDecimal"/>
+    <field name="paid_students" class="java.lang.Long"/>
+    <field name="pending_students" class="java.lang.Long"/>
+    <field name="total_revenue" class="java.math.BigDecimal"/>
+    <field name="attendance_percentage" class="java.math.BigDecimal"/>
+    <field name="present_count" class="java.lang.Long"/>
+    <field name="absent_count" class="java.lang.Long"/>
+    <field name="course_code" class="java.lang.String"/>
+    <field name="skill_rn" class="java.lang.Long"/>
+    <field name="status_rn" class="java.lang.Long"/>
+
+    <!-- ========== Variables for KPIs (MUST be before summary) ========== -->
+    <variable name="TotalRevenueSum" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{total_revenue} != null ? $F{total_revenue} : java.math.BigDecimal.ZERO]]></variableExpression>
+    </variable>
+    <variable name="AvgProgressOverall" class="java.math.BigDecimal" calculation="Average">
+        <variableExpression><![CDATA[$F{avg_progress} != null ? $F{avg_progress} : java.math.BigDecimal.ZERO]]></variableExpression>
+    </variable>
+    <!-- Pie chart dedup: track seen skill levels -->
+    <variable name="SkillCounter" class="java.lang.Integer" resetType="Report" calculation="Count">
+        <variableExpression><![CDATA[$F{skill_level}]]></variableExpression>
+    </variable>
+    <variable name="StatusCounter" class="java.lang.Integer" resetType="Report" calculation="Count">
+        <variableExpression><![CDATA[$F{status}]]></variableExpression>
+    </variable>
+
+    <!-- ========== Parameters ========== -->
+
+    <!-- ========== Title ========== -->
+    <title>
+        <band height="80">
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="5" backcolor="#DBEAFE"/>
+            </rectangle>
+            <textField>
+                <reportElement x="20" y="12" width="500" height="20" forecolor="#546E7A"/>
+                <textElement>
+                    <font size="11" isisBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Training Management System"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="20" y="32" width="600" height="30" forecolor="#0D47A1"/>
+                <textElement>
+                    <font size="22" isisBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Analytics Dashboard Report"]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd MMMM yyyy, HH:mm">
+                <reportElement x="580" y="50" width="200" height="20" forecolor="#78909C"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="20" y="70" width="762" height="1" forecolor="#E2E8F0"/>
+            </line>
+        </band>
+    </title>
+
+    <!-- ========== Summary with Charts ========== -->
+    <summary>
+        <band height="1050">
+
+            <!-- ===== KPI Summary Cards ===== -->
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="240" height="70" backcolor="#F8FAFC"/>
+            </rectangle>
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="4" height="70" backcolor="#DBEAFE"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="15" y="5" width="140" height="18"/>
+                <text><![CDATA[Total Courses]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="15" y="25" width="100" height="35" forecolor="#1565C0"/>
+                <textElement>
+                    <font size="28" isisBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+
+            <rectangle>
+                <reportElement mode="Opaque" x="260" y="0" width="240" height="70" backcolor="#F8FAFC"/>
+            </rectangle>
+            <rectangle>
+                <reportElement mode="Opaque" x="260" y="0" width="4" height="70" backcolor="#2E7D32"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="275" y="5" width="140" height="18" forecolor="#2E7D32"/>
+                <text><![CDATA[Total Revenue]]></text>
+            </staticText>
+            <textField pattern="$#,##0">
+                <reportElement x="275" y="25" width="200" height="35" forecolor="#2E7D32"/>
+                <textElement>
+                    <font size="24" isisBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{TotalRevenueSum}]]></textFieldExpression>
+            </textField>
+
+            <rectangle>
+                <reportElement mode="Opaque" x="520" y="0" width="260" height="70" backcolor="#F8FAFC"/>
+            </rectangle>
+            <rectangle>
+                <reportElement mode="Opaque" x="520" y="0" width="4" height="70" backcolor="#FED7AA"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="535" y="5" width="160" height="18" forecolor="#E65100"/>
+                <text><![CDATA[Avg Progress]]></text>
+            </staticText>
+            <textField pattern="#0.0'%'">
+                <reportElement x="535" y="25" width="150" height="35" forecolor="#E65100"/>
+                <textElement>
+                    <font size="28" isisBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{AvgProgressOverall}]]></textFieldExpression>
+            </textField>
+
+            <!-- Separator -->
+            <line>
+                <reportElement x="0" y="80" width="780" height="1" forecolor="#E2E8F0"/>
+            </line>
+
+            <!-- ===== Chart 1: Pie Chart - Students by Skill Level ===== -->
+            <textField>
+                <reportElement x="0" y="90" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Students Distribution by Skill Level"]]></textFieldExpression>
+            </textField>
+            <pieChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="0" y="115" width="380" height="280"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA[""]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <pieDataset>
+                    <dataset resetType="Report"/>
+                    <keyExpression><![CDATA[($F{skill_level} != null ? $F{skill_level} : "Unspecified") + " (" + $F{course_code} + ")"]]></keyExpression>
+                    <valueExpression><![CDATA[$F{total_students} != null ? $F{total_students} : 0]]></valueExpression>
+                </pieDataset>
+                <piePlot>
+                    <plot/>
+                </piePlot>
+            </pieChart>
+
+            <!-- ===== Chart 2: Bar Chart - Revenue by Course ===== -->
+            <textField>
+                <reportElement x="400" y="90" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Revenue by Course"]]></textFieldExpression>
+            </textField>
+            <barChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="400" y="115" width="380" height="280"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA[""]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Revenue"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_code} + " - " + $F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{total_revenue} != null ? $F{total_revenue} : java.math.BigDecimal.ZERO]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel color="#333333"/>
+                </barPlot>
+            </barChart>
+
+            <line>
+                <reportElement x="0" y="405" width="780" height="1" forecolor="#E2E8F0"/>
+            </line>
+
+            <!-- ===== Chart 3: Line Chart - Course Completion Trend ===== -->
+            <textField>
+                <reportElement x="0" y="415" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Course Completion Analysis"]]></textFieldExpression>
+            </textField>
+            <lineChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="0" y="440" width="380" height="260"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA[""]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Completed"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{completed_students} != null ? $F{completed_students} : 0]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <linePlot>
+                    <plot/>
+                </linePlot>
+            </lineChart>
+
+            <!-- ===== Chart 4: Bar Chart (Stacked) - Payment Status ===== -->
+            <textField>
+                <reportElement x="400" y="415" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Payment Status Overview"]]></textFieldExpression>
+            </textField>
+            <stackedBarChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="400" y="440" width="380" height="260"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA[""]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Paid"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{paid_students} != null ? $F{paid_students} : 0]]></valueExpression>
+                    </categorySeries>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Pending"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{pending_students} != null ? $F{pending_students} : 0]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                </barPlot>
+            </stackedBarChart>
+
+            <line>
+                <reportElement x="0" y="710" width="780" height="1" forecolor="#E2E8F0"/>
+            </line>
+
+            <!-- ===== Chart 5: Pie Chart - Course Status ===== -->
+            <textField>
+                <reportElement x="0" y="720" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Course Status Distribution"]]></textFieldExpression>
+            </textField>
+            <pie3DChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="0" y="745" width="380" height="280"/>
+                </chart>
+                <pieDataset>
+                    <dataset resetType="Report"/>
+                    <keyExpression><![CDATA[($F{status} != null ? $F{status} : "Unknown") + " (" + $F{course_code} + ")"]]></keyExpression>
+                    <valueExpression><![CDATA[$F{total_students} != null ? $F{total_students} : 0]]></valueExpression>
+                </pieDataset>
+                <pie3DPlot>
+                    <plot/>
+                </pie3DPlot>
+            </pie3DChart>
+
+            <!-- ===== Chart 6: Bar Chart - Attendance Stats ===== -->
+            <textField>
+                <reportElement x="400" y="720" width="400" height="22"/>
+                <textFieldExpression><![CDATA["Attendance: Present vs Absent"]]></textFieldExpression>
+            </textField>
+            <barChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="400" y="745" width="380" height="280"/>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Present"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{present_count} != null ? $F{present_count} : 0]]></valueExpression>
+                    </categorySeries>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Absent"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{course_name}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{absent_count} != null ? $F{absent_count} : 0]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel color="#333333"/>
+                </barPlot>
+            </barChart>
+
+        </band>
+    </summary>
+</jasperReport>

@@ -54,4 +54,4 @@ src/main/resources/logback.xml
 ### Lib (downloaded JARs) ###
 lib/*.jar
 !lib/.gitkeep
-
+test-output/*

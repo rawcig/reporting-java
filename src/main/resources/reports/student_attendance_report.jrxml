@@ -9,7 +9,7 @@
 
     <!-- ========== Styles ========== -->
     <style name="Title" fontSize="20" isBold="true" forecolor="#BF360C"/>
-    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#FFFFFF" backcolor="#E65100" hAlign="Center" vAlign="Middle"/>
+    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#1E293B" backcolor="#FED7AA" hAlign="Center" vAlign="Middle"/>
     <style name="Detail" fontSize="9" forecolor="#333333"/>
     <style name="DetailAlt" fontSize="9" forecolor="#333333" backcolor="#FBE9E7"/>
     <style name="Footer" fontSize="8" forecolor="#78909C"/>
@@ -38,7 +38,7 @@
     <title>
         <band height="80">
             <rectangle>
-                <reportElement mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#E65100"/>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#FED7AA"/>
             </rectangle>
             <textField>
                 <reportElement x="20" y="12" width="500" height="20" forecolor="#546E7A"/>

@@ -31,13 +31,24 @@ public class ReportPreviewFrame extends JDialog {
         this.jasperPrint = jasperPrint;
         this.parentFrame = owner;
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        
+        getContentPane().setBackground(Color.WHITE);
+
         // Ensure the dashboard is re-enabled when this preview is closed
         addWindowListener(new WindowAdapter() {
             @Override
+            public void windowOpened(WindowEvent e) {
+                // Parent is already disabled by caller
+            }
+
+            @Override
             public void windowClosed(WindowEvent e) {
+                // Re-enable dashboard
                 if (parentFrame != null) {
-                    parentFrame.setEnabled(true);
+                    SwingUtilities.invokeLater(() -> {
+                        parentFrame.setEnabled(true);
+                        parentFrame.toFront();
+                        parentFrame.requestFocusInWindow();
+                    });
                 }
             }
         });
@@ -49,6 +60,11 @@ public class ReportPreviewFrame extends JDialog {
         // === Top toolbar ===
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
+        toolbar.setBackground(new Color(245, 245, 245));
+        toolbar.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
 
         toolbar.add(makeBtn("  Export PDF  ", new Color(198, 40, 40), e -> exportPdf()));
         toolbar.add(makeBtn("  Export Excel  ", new Color(21, 101, 60), e -> exportExcel()));
@@ -59,9 +75,14 @@ public class ReportPreviewFrame extends JDialog {
 
         // === JRViewer panel ===
         JRViewer viewer = new JRViewer(jasperPrint);
+        viewer.setBackground(Color.WHITE);
 
-        add(toolbar, BorderLayout.NORTH);
-        add(viewer, BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.add(toolbar, BorderLayout.NORTH);
+        contentPanel.add(viewer, BorderLayout.CENTER);
+        contentPanel.setBackground(Color.WHITE);
+
+        add(contentPanel);
     }
 
     /**
@@ -69,22 +90,30 @@ public class ReportPreviewFrame extends JDialog {
      * Disables the parent frame to prevent focus stealing while open.
      */
     public void showOnTop() {
-        // Disable dashboard so user can't click behind
-        if (parentFrame != null) {
-            parentFrame.setEnabled(false);
-        }
-
         // Size to 90% of screen
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Rectangle screenBounds = ge.getMaximumWindowBounds();
         int width = (int) (screenBounds.width * 0.9);
         int height = (int) (screenBounds.height * 0.9);
         setSize(width, height);
+        
+        // Center on parent
         setLocationRelativeTo(getOwner());
-        setAlwaysOnTop(true); // Keep on top of other windows
-        setVisible(true); // Non-blocking due to MODELESS type
+        
+        // Bring to front BEFORE making visible
+        setAlwaysOnTop(true);
         toFront();
-        requestFocus();
+        requestFocusInWindow();
+        
+        // Now make visible
+        setVisible(true);
+        
+        // Ensure focus is on this window
+        SwingUtilities.invokeLater(() -> {
+            toFront();
+            requestFocusInWindow();
+            getRootPane().requestFocus();
+        });
     }
 
     private JButton makeBtn(String text, Color bg, java.awt.event.ActionListener action) {

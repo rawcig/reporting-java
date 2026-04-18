@@ -10,8 +10,7 @@ import org.example.util.DBConnection;
 import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,9 +23,6 @@ public class ReportGenerator {
 
     /**
      * Generates a report and returns JasperPrint.
-     * Throws on any failure — caller handles UI.
-     * @param reportType the report type to generate
-     * @param parameters filter parameters (may be empty)
      */
     public static JasperPrint generate(ReportType reportType, Map<String, Object> parameters) throws Exception {
         System.out.println("=== Starting: " + reportType.getDisplayName() + " ===");
@@ -34,54 +30,49 @@ public class ReportGenerator {
 
         // Step 1: Load JRXML
         System.out.println("  [1/4] Loading JRXML template...");
-        System.out.flush();
         String jrxmlPath = reportType.getJrxmlPath();
         InputStream jrxmlStream = ReportGenerator.class.getClassLoader().getResourceAsStream(jrxmlPath);
         if (jrxmlStream == null) {
             throw new RuntimeException("Report template not found: " + jrxmlPath);
         }
         System.out.println("  [1/4] OK: " + jrxmlPath);
-        System.out.flush();
 
         // Step 2: Compile
         System.out.println("  [2/4] Compiling JRXML...");
-        System.out.flush();
         JasperDesign jasperDesign = JRXmlLoader.load(jrxmlStream);
         JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
         System.out.println("  [2/4] Compiled successfully");
-        System.out.flush();
 
         // Step 3: Connect and fill
         System.out.println("  [3/4] Connecting to database...");
-        System.out.flush();
 
         JasperPrint jasperPrint;
         long elapsed;
         try (Connection conn = DBConnection.getConnection()) {
             System.out.println("  [3/4] Connected");
-            System.out.flush();
-
             System.out.println("  [4/4] Executing query and filling report...");
-            System.out.flush();
-            long start = System.currentTimeMillis();
 
-            // Use provided parameters (or empty map)
             Map<String, Object> params = parameters != null ? new HashMap<>(parameters) : new HashMap<>();
-            // Add report metadata as parameters
             params.put("REPORT_TITLE", reportType.getDisplayName());
             params.put("GENERATED_BY", "Training Management System");
 
-            // Build SQL with filter conditions
-            String sql = buildFilteredSql(reportType, parameters);
+            // Build SQL with filter conditions using prepared statements
+            FilteredSql filteredSql = buildFilteredSqlWithParams(reportType, parameters);
 
-            try (var stmt = conn.createStatement()) {
-                stmt.setQueryTimeout(60);
-                try (var rs = stmt.executeQuery(sql)) {
+            try (PreparedStatement pstmt = conn.prepareStatement(filteredSql.sql)) {
+                // Set parameters
+                int paramIndex = 1;
+                for (Object value : filteredSql.parameters) {
+                    pstmt.setObject(paramIndex++, value);
+                }
+                pstmt.setQueryTimeout(60);
+                
+                try (ResultSet rs = pstmt.executeQuery()) {
                     JRResultSetDataSource dataSource = new JRResultSetDataSource(rs);
                     jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
                 }
             }
-            elapsed = System.currentTimeMillis() - start;
+            elapsed = System.currentTimeMillis() - System.currentTimeMillis();
         }
 
         System.out.println("  [4/4] Filled in " + elapsed + "ms, pages: " + jasperPrint.getPages().size());
@@ -91,42 +82,46 @@ public class ReportGenerator {
     }
 
     /**
-     * Builds SQL with dynamic WHERE clauses based on filter parameters.
-     * Only applies filters that are relevant to the report type.
+     * Builds SQL with dynamic WHERE clauses using prepared statement parameters.
      */
-    private static String buildFilteredSql(ReportType reportType, Map<String, Object> filters) {
+    private static FilteredSql buildFilteredSqlWithParams(ReportType reportType, Map<String, Object> filters) {
         String sql = reportType.getSqlQuery().trim();
         if (filters == null || filters.isEmpty()) {
-            return sql;
+            return new FilteredSql(sql, new ArrayList<>());
         }
 
         List<String> conditions = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
 
-        // Determine which filters apply based on report type
         Set<String> allowedFilters = getFilterKeysForReport(reportType);
 
         // Institute filter
         if (allowedFilters.contains("institute")) {
             String inst = (String) filters.get("institute_name");
-            if (inst != null) {
-                conditions.add("rc.regcom_name = '" + sanitize(inst) + "'");
+            if (inst != null && !inst.trim().isEmpty()) {
+                conditions.add("rc.regcom_name = ?");
+                params.add(inst);
             }
         }
 
         // Course filter
         if (allowedFilters.contains("course")) {
             String course = (String) filters.get("course_filter");
-            if (course != null) {
-                conditions.add("(c.course_code || ' - ' || c.course_name) = '" + sanitize(course) + "'");
+            if (course != null && !course.trim().isEmpty()) {
+                conditions.add("(c.course_code || ' - ' || c.course_name) = ?");
+                params.add(course);
             }
         }
 
         // Student search
         if (allowedFilters.contains("student")) {
             String student = (String) filters.get("student_filter");
-            if (student != null) {
-                conditions.add("(LOWER(s.first_name || ' ' || s.last_name) LIKE '%" + sanitize(student.toLowerCase()) + "%' "
-                        + "OR LOWER(s.student_code) LIKE '%" + sanitize(student.toLowerCase()) + "%')");
+            if (student != null && !student.trim().isEmpty()) {
+                conditions.add("(LOWER(s.first_name || ' ' || s.last_name) LIKE ? "
+                        + "OR LOWER(s.student_code) LIKE ?)");
+                String searchPattern = "%" + student.toLowerCase() + "%";
+                params.add(searchPattern);
+                params.add(searchPattern);
             }
         }
 
@@ -135,65 +130,71 @@ public class ReportGenerator {
             java.sql.Date fromDate = (java.sql.Date) filters.get("from_date");
             java.sql.Date toDate = (java.sql.Date) filters.get("to_date");
             if (fromDate != null) {
-                conditions.add("e.enrollment_date >= '" + fromDate + "'");
+                conditions.add("e.enrollment_date >= ?");
+                params.add(fromDate);
             }
             if (toDate != null) {
-                conditions.add("e.enrollment_date <= '" + toDate + "'");
+                conditions.add("e.enrollment_date <= ?");
+                params.add(toDate);
             }
         }
 
         // Payment status
         if (allowedFilters.contains("payment")) {
             String payment = (String) filters.get("payment_filter");
-            if (payment != null) {
-                conditions.add("e.payment_status = '" + sanitize(payment) + "'");
+            if (payment != null && !ALL.equals(payment)) {
+                conditions.add("e.payment_status = ?");
+                params.add(payment);
             }
         }
 
         // Gender
         if (allowedFilters.contains("gender")) {
             String gender = (String) filters.get("gender_filter");
-            if (gender != null) {
-                conditions.add("s.gender = '" + sanitize(gender) + "'");
+            if (gender != null && !ALL.equals(gender)) {
+                // Map display values to DB values
+                String dbGender = gender.equals("Male") ? "M" : gender.equals("Female") ? "F" : gender;
+                conditions.add("s.gender = ?");
+                params.add(dbGender);
             }
         }
 
         // Skill level
         if (allowedFilters.contains("skill")) {
             String skill = (String) filters.get("skill_filter");
-            if (skill != null) {
-                conditions.add("c.skill_level = '" + sanitize(skill) + "'");
+            if (skill != null && !ALL.equals(skill)) {
+                conditions.add("c.skill_level = ?");
+                params.add(skill);
             }
         }
 
         // Completion status
         if (allowedFilters.contains("completion")) {
             String completion = (String) filters.get("completion_filter");
-            if (completion != null) {
-                conditions.add("e.completion_status = '" + sanitize(completion) + "'");
+            if (completion != null && !ALL.equals(completion)) {
+                conditions.add("e.completion_status = ?");
+                params.add(completion);
             }
         }
 
         if (conditions.isEmpty()) {
-            return sql;
+            return new FilteredSql(sql, new ArrayList<>());
         }
 
+        // Build WHERE clause
         String whereClause = " WHERE " + String.join(" AND ", conditions);
         String upperSql = sql.toUpperCase();
-        String andClause = " AND " + String.join(" AND ", conditions);
 
-        // For UNION queries, wrap in subquery with WHERE (use column names, not table aliases)
+        // Handle UNION queries
         if (upperSql.contains("UNION")) {
             String unionWhere = String.join(" AND ", conditions)
-                    .replace("s.gender", "gender")
-                    .replace("c.course_code || ' - ' || c.course_name", "course_code || ' - ' || course_name");
+                    .replace("rc.regcom_name = ?", "regcom_name = ?")
+                    .replace("c.course_code || ' - ' || c.course_name = ?", "course_code || ' - ' || course_name = ?")
+                    .replace("s.gender = ?", "gender = ?");
             sql = "SELECT * FROM (" + sql + ") AS filtered WHERE " + unionWhere + " ORDER BY 1";
         } else if (containsWhereClause(upperSql)) {
-            // Query already has WHERE — append AND before next clause
             int whereStart = upperSql.indexOf("WHERE");
             int endIdx = sql.length();
-
-            // Find where the WHERE clause ends (before next SQL clause)
             String[] nextClauses = {"GROUP BY", "ORDER BY", "HAVING", "LIMIT"};
             for (String clause : nextClauses) {
                 int idx = upperSql.indexOf(clause, whereStart + 5);
@@ -201,39 +202,28 @@ public class ReportGenerator {
                     endIdx = idx;
                 }
             }
-
-            sql = sql.substring(0, endIdx) + andClause + sql.substring(endIdx);
+            sql = sql.substring(0, endIdx) + " AND " + String.join(" AND ", conditions) + sql.substring(endIdx);
         } else if (upperSql.contains("GROUP BY")) {
-            // WHERE must come BEFORE GROUP BY
             int groupByIdx = upperSql.indexOf("GROUP BY");
             sql = sql.substring(0, groupByIdx) + whereClause + "\n    " + sql.substring(groupByIdx);
         } else if (upperSql.contains("ORDER BY")) {
-            // No GROUP BY — WHERE before ORDER BY
             int orderByIdx = upperSql.lastIndexOf("ORDER BY");
             sql = sql.substring(0, orderByIdx) + whereClause + "\n    " + sql.substring(orderByIdx);
         } else {
-            // Simple query — append WHERE at end
             sql += whereClause;
         }
 
         System.out.println("  [SQL Filter] Applied " + conditions.size() + " condition(s) for " + reportType.name());
-        return sql;
+        return new FilteredSql(sql, params);
     }
 
-    /**
-     * Checks if the SQL already has a WHERE clause (not inside a string literal).
-     * Simple approach: look for WHERE keyword with word boundaries.
-     */
+    private static final String ALL = "-- All --";
+
     private static boolean containsWhereClause(String upperSql) {
-        // Remove string literals (text between single quotes) to avoid false matches
         String sqlNoStrings = upperSql.replaceAll("'[^']*'", "''");
-        // Check for WHERE as a whole word
         return sqlNoStrings.matches("(?s).*\\bWHERE\\b.*");
     }
 
-    /**
-     * Returns the set of filter keys applicable to a given report type.
-     */
     private static Set<String> getFilterKeysForReport(ReportType reportType) {
         Set<String> keys = new HashSet<>();
         switch (reportType) {
@@ -260,18 +250,16 @@ public class ReportGenerator {
     }
 
     /**
-     * Basic SQL injection prevention — escape single quotes.
+     * Helper class to hold SQL and parameters.
      */
-    private static String sanitize(String input) {
-        return input.replace("'", "''");
-    }
+    private static class FilteredSql {
+        final String sql;
+        final List<Object> parameters;
 
-    /**
-     * Legacy method: generates and previews a report with full UI handling.
-     * Kept for backward compatibility — delegates to generate().
-     */
-    public static void generateAndPreview(ReportType reportType, JFrame parent) {
-        generateAndPreview(reportType, parent, new HashMap<>());
+        FilteredSql(String sql, List<Object> parameters) {
+            this.sql = sql;
+            this.parameters = parameters;
+        }
     }
 
     /**
@@ -294,13 +282,14 @@ public class ReportGenerator {
             final String title = reportType.getDisplayName() + " - Report Preview";
             SwingUtilities.invokeLater(() -> {
                 try {
+                    // Disable parent dashboard
+                    if (parent != null) {
+                        parent.setEnabled(false);
+                    }
+                    
                     ReportPreviewFrame preview = new ReportPreviewFrame(parent, jasperPrint, title);
                     preview.showOnTop();
-                    System.out.println("  Preview displayed");
-                    System.out.flush();
                 } catch (Exception e) {
-                    System.err.println("  Preview ERROR: " + e.getMessage());
-                    e.printStackTrace();
                     JOptionPane.showMessageDialog(parent,
                             "Failed to open preview: " + e.getMessage(),
                             "Preview Error", JOptionPane.ERROR_MESSAGE);
@@ -308,13 +297,11 @@ public class ReportGenerator {
             });
 
         } catch (SQLException e) {
-            System.err.println("  DATABASE ERROR: " + e.getClass().getName() + ": " + e.getMessage());
             e.printStackTrace(System.err);
             final String userMessage = buildDatabaseErrorMessage(e);
             SwingUtilities.invokeLater(() -> showDatabaseErrorDialog(parent, userMessage));
 
         } catch (Exception e) {
-            System.err.println("  ERROR: " + e.getClass().getName() + ": " + e.getMessage());
             e.printStackTrace(System.err);
             final String msg = e.getClass().getSimpleName() + ": " + e.getMessage();
             SwingUtilities.invokeLater(() -> {
@@ -333,42 +320,28 @@ public class ReportGenerator {
         }
     }
 
-    /**
-     * Builds a user-friendly error message for database failures.
-     */
     private static String buildDatabaseErrorMessage(SQLException e) {
         String state = e.getSQLState();
         String message = e.getMessage();
 
-        // Connection lost / refused
         if (state != null && (state.equals("08001") || state.equals("08006") || state.equals("08003"))) {
             return "Lost connection to the database while generating the report.\n\n"
                     + "Please check:\n"
                     + "  • PostgreSQL service is still running\n"
-                    + "  • Network connection is stable\n"
-                    + "  • Database server is not overloaded\n\n"
+                    + "  • Network connection is stable\n\n"
                     + "Details: " + message;
         }
 
-        // Query timeout
         if (state != null && state.equals("57014")) {
             return "The database query took too long and was cancelled.\n\n"
-                    + "Possible causes:\n"
-                    + "  • The report covers too much data\n"
-                    + "  • Database server is under heavy load\n\n"
                     + "Try narrowing your report criteria and try again.";
         }
 
-        // Generic SQL error
         return "A database error occurred while generating the report.\n\n"
                 + "SQL State: " + (state != null ? state : "Unknown") + "\n"
-                + "Details: " + message + "\n\n"
-                + "Please try again or contact your system administrator.";
+                + "Details: " + message;
     }
 
-    /**
-     * Shows a detailed database error dialog.
-     */
     private static void showDatabaseErrorDialog(JFrame parent, String message) {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -387,15 +360,16 @@ public class ReportGenerator {
         detailsArea.setLineWrap(true);
         detailsArea.setWrapStyleWord(true);
         detailsArea.setBackground(new Color(255, 245, 245));
-        detailsArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JScrollPane scrollPane = new JScrollPane(detailsArea);
         scrollPane.setPreferredSize(new Dimension(500, 180));
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        JOptionPane.showMessageDialog(parent,
-                panel,
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, panel, "Database Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // Legacy methods for backward compatibility
+    public static void generateAndPreview(ReportType reportType, JFrame parent) {
+        generateAndPreview(reportType, parent, new HashMap<>());
     }
 }

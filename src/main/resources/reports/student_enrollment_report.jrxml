@@ -10,7 +10,7 @@
     <!-- ========== Styles ========== -->
     <style name="Title" fontSize="20" isBold="true" forecolor="#1A237E"/>
     <style name="Subtitle" fontSize="11" forecolor="#546E7A"/>
-    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#FFFFFF" backcolor="#1565C0" hAlign="Center" vAlign="Middle"/>
+    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#1E293B" backcolor="#DBEAFE" hAlign="Center" vAlign="Middle"/>
     <style name="Detail" fontSize="9" forecolor="#333333"/>
     <style name="DetailAlt" fontSize="9" forecolor="#333333" backcolor="#E3F2FD"/>
     <style name="Footer" fontSize="8" forecolor="#78909C"/>
@@ -43,7 +43,7 @@
         <band height="80">
             <!-- Top accent line -->
             <rectangle>
-                <reportElement mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#1565C0"/>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#DBEAFE"/>
             </rectangle>
             <!-- Institute name -->
             <textField>

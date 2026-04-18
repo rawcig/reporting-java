@@ -10,7 +10,7 @@
     <!-- ========== Styles ========== -->
     <style name="Title" fontSize="20" isBold="true" forecolor="#1B5E20"/>
     <style name="Subtitle" fontSize="11" forecolor="#546E7A"/>
-    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#FFFFFF" backcolor="#2E7D32" hAlign="Center" vAlign="Middle"/>
+    <style name="ColumnHeader" fontSize="9" isBold="true" forecolor="#1E293B" backcolor="#2E7D32" hAlign="Center" vAlign="Middle"/>
     <style name="Detail" fontSize="9" forecolor="#333333"/>
     <style name="DetailAlt" fontSize="9" forecolor="#333333" backcolor="#E8F5E9"/>
     <style name="Footer" fontSize="8" forecolor="#78909C"/>

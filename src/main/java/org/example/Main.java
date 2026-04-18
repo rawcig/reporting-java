@@ -9,9 +9,18 @@ import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Set FlatLaf look and feel
+        // Set FlatLaf look and feel with proper contrast
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
+            FlatLightLaf.setup();
+            
+            // Set UI defaults for better text visibility
+            UIManager.put("Button.foreground", new Color(50, 50, 50));
+            UIManager.put("Label.foreground", new Color(50, 50, 50));
+            UIManager.put("ComboBox.foreground", new Color(50, 50, 50));
+            UIManager.put("TextField.foreground", new Color(50, 50, 50));
+            UIManager.put("Panel.background", new Color(250, 250, 250));
+            
+            FlatLightLaf.install();
         } catch (Exception ex) {
             System.err.println("Failed to initialize FlatLaf: " + ex.getMessage());
         }
@@ -67,7 +76,7 @@ public class Main {
         ));
 
         JScrollPane scrollPane = new JScrollPane(detailsArea);
-        scrollPane.setPreferredSize(new Dimension(500, 180));
+        scrollPane.setPreferredSize(new Dimension(700, 180));
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Troubleshooting tips
