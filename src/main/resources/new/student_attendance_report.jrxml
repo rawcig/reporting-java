@@ -1,0 +1,135 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="StudentAttendanceReport" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6e899d6b-a9b6-4053-8668-6d6e9967bb19">
+	<style name="Title" forecolor="#BF360C" fontSize="20.0" bold="true"/>
+	<style name="ColumnHeader" forecolor="#FFFFFF" backcolor="#E65100" hTextAlign="Center" vTextAlign="Middle" hImageAlign="Center" vImageAlign="Middle" fontSize="9.0" bold="true"/>
+	<style name="Detail" forecolor="#333333" fontSize="9.0"/>
+	<style name="DetailAlt" forecolor="#333333" backcolor="#FBE9E7" fontSize="9.0"/>
+	<style name="Footer" forecolor="#78909C" fontSize="8.0"/>
+	<style name="SummaryLabel" forecolor="#BF360C" fontSize="11.0" bold="true"/>
+	<style name="SummaryValue" forecolor="#E65100" fontSize="11.0" bold="true"/>
+	<style name="Good" forecolor="#2E7D32" fontSize="9.0"/>
+	<style name="Warning" forecolor="#F57F17" fontSize="9.0"/>
+	<style name="Danger" forecolor="#C62828" fontSize="9.0"/>
+	<field name="student_code" class="java.lang.String"/>
+	<field name="student_name" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="course_code" class="java.lang.String"/>
+	<field name="course_name" class="java.lang.String"/>
+	<field name="total_sessions" class="java.lang.Long"/>
+	<field name="present_count" class="java.lang.Long"/>
+	<field name="absent_count" class="java.lang.Long"/>
+	<field name="attendance_percentage" class="java.math.BigDecimal"/>
+	<field name="total_minutes_attended" class="java.lang.Long"/>
+	<field name="institute_name" class="java.lang.String"/>
+	<title height="80">
+		<element kind="rectangle" uuid="868e30ab-4539-45ff-bc19-e45ed596caa9" mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#E65100"/>
+		<element kind="textField" uuid="1c633772-3939-405c-b4f7-2220e002e464" x="20" y="12" width="500" height="20" forecolor="#546E7A" fontSize="11.0" bold="true">
+			<expression><![CDATA[$F{institute_name} != null ? $F{institute_name} : "Training System"]]></expression>
+		</element>
+		<element kind="textField" uuid="ab261f73-5cdf-4397-a10b-e88ed722ad82" x="20" y="32" width="600" height="30" forecolor="#BF360C" fontSize="20.0" bold="true">
+			<expression><![CDATA["Student Attendance Report"]]></expression>
+		</element>
+		<element kind="textField" uuid="a3080bb6-d0ec-4598-b652-97d3b6ce3ef3" x="580" y="38" width="200" height="20" forecolor="#78909C" fontSize="10.0" pattern="dd MMMM yyyy, HH:mm" hTextAlign="Right">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="line" uuid="6a8c6608-9d21-4617-bb50-02fa753a1f98" x="20" y="68" width="762" height="1" forecolor="#B0BEC5"/>
+	</title>
+	<pageHeader height="22">
+		<element kind="staticText" uuid="104410ca-964a-448f-8aa8-31af2918f3a8" x="0" y="0" width="30" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[#]]></text>
+		</element>
+		<element kind="staticText" uuid="6dfa1a72-79d4-4a3a-8f1a-da341b9aa1bf" x="30" y="0" width="60" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Code]]></text>
+		</element>
+		<element kind="staticText" uuid="24215f41-570c-4aba-a33e-09c95fbe19fd" x="90" y="0" width="115" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Student Name]]></text>
+		</element>
+		<element kind="staticText" uuid="65478a30-9953-419b-944b-65ea938f095a" x="205" y="0" width="35" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[G]]></text>
+		</element>
+		<element kind="staticText" uuid="78af6a45-a4b0-44c4-b647-45ea411ecd12" x="240" y="0" width="105" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Course]]></text>
+		</element>
+		<element kind="staticText" uuid="e72f60b9-f47c-41ee-9404-0d275f6faf60" x="345" y="0" width="45" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Total]]></text>
+		</element>
+		<element kind="staticText" uuid="03684f8d-28c0-4535-b5bd-b6c33faa744d" x="390" y="0" width="45" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Present]]></text>
+		</element>
+		<element kind="staticText" uuid="83f13a4c-b41f-4c41-aa29-8c43e148ba88" x="435" y="0" width="45" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Absent]]></text>
+		</element>
+		<element kind="staticText" uuid="b05851db-be3e-4410-b591-d65865f7ba5c" x="480" y="0" width="60" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Attend %]]></text>
+		</element>
+		<element kind="staticText" uuid="209b894c-4572-4a62-9fec-cb26dc95f348" x="540" y="0" width="55" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Minutes]]></text>
+		</element>
+		<element kind="staticText" uuid="c5ac7e75-17da-4944-9918-88e4c04a4984" x="595" y="0" width="100" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Institute]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="18">
+			<element kind="rectangle" uuid="e65453da-3572-45e5-8386-f475d7ae0637" x="0" y="0" width="802" height="18" style="DetailAlt">
+				<printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+			</element>
+			<element kind="textField" uuid="ea7937ff-d7d7-417d-999e-095f22ddb0a0" x="0" y="0" width="30" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+			</element>
+			<element kind="textField" uuid="9bda48d9-6fe4-49e3-8cd9-7be3e4816249" x="30" y="0" width="60" height="18" style="Detail">
+				<expression><![CDATA[$F{student_code}]]></expression>
+			</element>
+			<element kind="textField" uuid="ccd1ec6d-ab91-4924-bde6-a4c17cbcf136" x="90" y="0" width="115" height="18" style="Detail">
+				<expression><![CDATA[$F{student_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="d827565d-d08a-482b-b322-fa96b60bfe02" x="205" y="0" width="35" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{gender}]]></expression>
+			</element>
+			<element kind="textField" uuid="feceef3f-22f4-496d-84c6-a51e60a09bf5" x="240" y="0" width="105" height="18" style="Detail">
+				<expression><![CDATA[$F{course_code} + " - " + $F{course_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="3afa7e61-b269-4b67-93e3-0e3d8ef08a68" x="345" y="0" width="45" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{total_sessions}]]></expression>
+			</element>
+			<element kind="textField" uuid="064e3969-2b78-4c53-9129-18f3926980bf" x="390" y="0" width="45" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{present_count}]]></expression>
+			</element>
+			<element kind="textField" uuid="c8ed1140-1bd9-49b8-ae20-da50f60041ec" x="435" y="0" width="45" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{absent_count}]]></expression>
+			</element>
+			<element kind="textField" uuid="ee1f3fa9-73a8-4166-945a-7e6652c1e84c" x="480" y="0" width="60" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{attendance_percentage} != null ? $F{attendance_percentage} + "%" : "0.0%"]]></expression>
+			</element>
+			<element kind="textField" uuid="be0cb683-8305-49b1-b097-4de7be30e254" x="540" y="0" width="55" height="18" hTextAlign="Right" style="Detail">
+				<expression><![CDATA[$F{total_minutes_attended}]]></expression>
+			</element>
+			<element kind="textField" uuid="bd05ec62-28d6-4bea-b4d1-75cebd09cad3" x="595" y="0" width="100" height="18" style="Detail">
+				<expression><![CDATA[$F{institute_name} != null ? $F{institute_name} : "-"]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="25">
+		<element kind="line" uuid="31b443e6-2e82-484e-b78d-d0c11aad1298" x="0" y="0" width="802" height="1" forecolor="#B0BEC5"/>
+		<element kind="textField" uuid="29aa42bd-c71e-4c8a-b15f-f5e397356ecf" x="0" y="4" width="400" height="16" style="Footer">
+			<expression><![CDATA["Generated: " + new java.util.Date()]]></expression>
+		</element>
+		<element kind="textField" uuid="efd4240b-4037-4529-b597-fa315e97f390" x="400" y="4" width="402" height="16" hTextAlign="Right" style="Footer">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></expression>
+		</element>
+		<element kind="textField" uuid="6833b82c-b88d-45db-b724-deaa83f58cff" x="400" y="4" width="402" height="16" evaluationTime="Report" hTextAlign="Right" style="Footer">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary height="35">
+		<element kind="line" uuid="c41f8db9-107a-4616-a499-285442d5f4b1" x="20" y="0" width="762" height="1" forecolor="#B0BEC5"/>
+		<element kind="staticText" uuid="5cc7e67c-836f-4672-bc35-853f901fbe1e" x="20" y="6" width="150" height="18" style="SummaryLabel">
+			<text><![CDATA[Total Records:]]></text>
+		</element>
+		<element kind="textField" uuid="0cff927a-b759-45e8-9c54-562766ec8d2f" x="175" y="6" width="40" height="18" style="SummaryValue">
+			<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

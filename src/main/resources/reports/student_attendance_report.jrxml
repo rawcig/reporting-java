@@ -165,12 +165,6 @@
             <!-- Color-coded attendance percentage -->
             <textField>
                 <reportElement x="480" y="0" width="60" height="18"/>
-                <!-- Green >= 80% -->
-                <style conditionExpression="$F{attendance_percentage}.doubleValue() >= 80.0" style="Good"/>
-                <!-- Orange 50-79% -->
-                <style conditionExpression="$F{attendance_percentage}.doubleValue() >= 50.0 &amp;&amp; $F{attendance_percentage}.doubleValue() &lt; 80.0" style="Warning"/>
-                <!-- Red < 50% -->
-                <style conditionExpression="$F{attendance_percentage}.doubleValue() &lt; 50.0" style="Danger"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{attendance_percentage} + "%"]]></textFieldExpression>
             </textField>

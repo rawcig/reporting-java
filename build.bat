@@ -1,78 +1,72 @@
 @echo off
-REM Download dependencies from Maven Central and compile
 SETLOCAL
 
-SET PROJECT_DIR=d:\r\SU-35-Y3-S2\JAVA-II\final\reporting-project
-SET LIB_DIR=%PROJECT_DIR%\lib
-SET SRC_DIR=%PROJECT_DIR%\src\main\java
-SET RES_DIR=%PROJECT_DIR%\src\main\resources
-SET OUT_DIR=%PROJECT_DIR%\target\classes
+SET PROJ=d:\r\SU-35-Y3-S2\JAVA-II\final\reporting-project
+SET LIB=%PROJ%\lib
+SET SRC=%PROJ%\src\main\java
+SET RES=%PROJ%\src\main\resources
+SET OUT=%PROJ%\target\classes
 
-REM Create lib and output directories
-if not exist "%LIB_DIR%" mkdir "%LIB_DIR%"
-if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+if not exist "%LIB%" mkdir "%LIB%"
+if not exist "%OUT%" mkdir "%OUT%"
 
-REM Download JARs if not present
-if not exist "%LIB_DIR%\jasperreports-6.21.3.jar" (
-    echo Downloading jasperreports...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/net/sf/jasperreports/jasperreports/6.21.3/jasperreports-6.21.3.jar' -OutFile '%LIB_DIR%\jasperreports-6.21.3.jar'"
-)
+call :dl jasperreports-6.21.3.jar https://repo1.maven.org/maven2/net/sf/jasperreports/jasperreports/6.21.3/jasperreports-6.21.3.jar
+call :dl jasperreports-fonts-6.21.3.jar https://repo1.maven.org/maven2/net/sf/jasperreports/jasperreports-fonts/6.21.3/jasperreports-fonts-6.21.3.jar
+call :dl postgresql-42.7.7.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.7/postgresql-42.7.7.jar
+call :dl flatlaf-3.5.jar https://repo1.maven.org/maven2/com/formdev/flatlaf/3.5/flatlaf-3.5.jar
+call :dl commons-digester-2.1.jar https://repo1.maven.org/maven2/commons-digester/commons-digester/2.1/commons-digester-2.1.jar
+call :dl commons-collections4-4.4.jar https://repo1.maven.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar
+call :dl commons-logging-1.3.5.jar https://repo1.maven.org/maven2/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar
+call :dl commons-beanutils-1.11.0.jar https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar
+call :dl itext-2.1.7.jar https://repo1.maven.org/maven2/com/github/librepdf/openpdf/1.3.30/openpdf-1.3.30.jar
+call :dl pdfbox-2.0.32.jar https://repo1.maven.org/maven2/org/apache/pdfbox/pdfbox/2.0.32/pdfbox-2.0.32.jar
+call :dl fontbox-2.0.32.jar https://repo1.maven.org/maven2/org/apache/pdfbox/fontbox/2.0.32/fontbox-2.0.32.jar
+call :dl commons-io-2.16.1.jar https://repo1.maven.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar
+call :dl poi-5.3.0.jar https://repo1.maven.org/maven2/org/apache/poi/poi/5.3.0/poi-5.3.0.jar
+call :dl poi-ooxml-5.3.0.jar https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/5.3.0/poi-ooxml-5.3.0.jar
+call :dl poi-ooxml-lite-5.3.0.jar https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-lite/5.3.0/poi-ooxml-lite-5.3.0.jar
+call :dl commons-compress-1.27.1.jar https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.27.1/commons-compress-1.27.1.jar
+call :dl xmlbeans-5.2.1.jar https://repo1.maven.org/maven2/org/apache/xmlbeans/xmlbeans/5.2.1/xmlbeans-5.2.1.jar
+call :dl curvesapi-1.08.jar https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar
+call :dl SparseBitSet-1.3.jar https://repo1.maven.org/maven2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar
+call :dl bcpkix-jdk18on-1.78.jar https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.78/bcpkix-jdk18on-1.78.jar
+call :dl bcprov-jdk18on-1.78.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.78/bcprov-jdk18on-1.78.jar
 
-if not exist "%LIB_DIR%\jasperreports-fonts-6.21.3.jar" (
-    echo Downloading jasperreports-fonts...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/net/sf/jasperreports/jasperreports-fonts/6.21.3/jasperreports-fonts-6.21.3.jar' -OutFile '%LIB_DIR%\jasperreports-fonts-6.21.3.jar'"
-)
+SET CP=%LIB%\jasperreports-6.21.3.jar;%LIB%\jasperreports-fonts-6.21.3.jar;%LIB%\commons-digester-2.1.jar;%LIB%\commons-collections4-4.4.jar;%LIB%\commons-logging-1.3.5.jar;%LIB%\commons-beanutils-1.11.0.jar;%LIB%\itext-2.1.7.jar;%LIB%\pdfbox-2.0.32.jar;%LIB%\fontbox-2.0.32.jar;%LIB%\commons-io-2.16.1.jar;%LIB%\poi-5.3.0.jar;%LIB%\poi-ooxml-5.3.0.jar;%LIB%\poi-ooxml-lite-5.3.0.jar;%LIB%\commons-compress-1.27.1.jar;%LIB%\xmlbeans-5.2.1.jar;%LIB%\curvesapi-1.08.jar;%LIB%\SparseBitSet-1.3.jar;%LIB%\bcpkix-jdk18on-1.78.jar;%LIB%\bcprov-jdk18on-1.78.jar;%LIB%\postgresql-42.7.7.jar;%LIB%\flatlaf-3.5.jar
 
-if not exist "%LIB_DIR%\postgresql-42.7.7.jar" (
-    echo Downloading postgresql jdbc...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.7/postgresql-42.7.7.jar' -OutFile '%LIB_DIR%\postgresql-42.7.7.jar'"
-)
-
-if not exist "%LIB_DIR%\flatlaf-3.5.jar" (
-    echo Downloading flatlaf...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/com/formdev/flatlaf/3.5/flatlaf-3.5.jar' -OutFile '%LIB_DIR%\flatlaf-3.5.jar'"
-)
-
-if not exist "%LIB_DIR%\commons-digester-2.1.jar" (
-    echo Downloading commons-digester...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/commons-digester/commons-digester/2.1/commons-digester-2.1.jar' -OutFile '%LIB_DIR%\commons-digester-2.1.jar'"
-)
-
-if not exist "%LIB_DIR%\commons-collections4-4.4.jar" (
-    echo Downloading commons-collections4...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar' -OutFile '%LIB_DIR%\commons-collections4-4.4.jar'"
-)
-
-if not exist "%LIB_DIR%\commons-logging-1.3.5.jar" (
-    echo Downloading commons-logging...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar' -OutFile '%LIB_DIR%\commons-logging-1.3.5.jar'"
-)
-
-if not exist "%LIB_DIR%\commons-beanutils-1.11.0.jar" (
-    echo Downloading commons-beanutils...
-    powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar' -OutFile '%LIB_DIR%\commons-beanutils-1.11.0.jar'"
-)
-
-REM Build classpath
-SET CP=%LIB_DIR%\jasperreports-6.21.3.jar;%LIB_DIR%\jasperreports-fonts-6.21.3.jar;%LIB_DIR%\commons-digester-2.1.jar;%LIB_DIR%\commons-collections4-4.4.jar;%LIB_DIR%\commons-logging-1.3.5.jar;%LIB_DIR%\commons-beanutils-1.11.0.jar;%LIB_DIR%\postgresql-42.7.7.jar;%LIB_DIR%\flatlaf-3.5.jar
-
-REM Compile
 echo Compiling Java sources...
-javac -encoding UTF-8 -source 25 -target 25 -cp "%CP%" -d "%OUT_DIR%" -sourcepath "%SRC_DIR%" "%SRC_DIR%\org\example\Main.java" "%SRC_DIR%\org\example\model\ReportType.java" "%SRC_DIR%\org\example\util\DBConnection.java" "%SRC_DIR%\org\example\service\ReportGenerator.java" "%SRC_DIR%\org\example\ui\DashboardFrame.java"
+REM Compile all Java sources recursively
+javac -encoding UTF-8 -source 25 -target 25 -cp "%CP%" -d "%OUT%" -sourcepath "%SRC%" ^
+  "%SRC%\org\example\Main.java" ^
+  "%SRC%\org\example\model\ReportType.java" ^
+  "%SRC%\org\example\util\DBConnection.java" ^
+  "%SRC%\org\example\service\ReportGenerator.java" ^
+  "%SRC%\org\example\ui\DashboardFrame.java" ^
+  "%SRC%\org\example\ui\ReportPreviewFrame.java" ^
+  "%SRC%\org\example\ui\FilterDialog.java" ^
+  "%SRC%\org\example\TestReports.java" ^
+  "%SRC%\org\example\TestPdfExport.java" ^
+  "%SRC%\org\example\TestFilteredReports.java" ^
+  "%SRC%\org\example\TestAllReports.java"
 
 if %ERRORLEVEL% EQU 0 (
-    REM Copy resources
-    xcopy /E /I /Y "%RES_DIR%\*" "%OUT_DIR%\"
+    xcopy /E /I /Y "%RES%\*" "%OUT%\" >nul
     echo.
     echo ============================
     echo BUILD SUCCESSFUL
     echo ============================
-    echo To run: java -cp "%OUT_DIR%;%CP%" org.example.Main
 ) else (
     echo.
     echo ============================
     echo BUILD FAILED
     echo ============================
 )
-
 ENDLOCAL
+goto :eof
+
+:dl
+if not exist "%LIB%\%~1" (
+    echo Downloading %~1...
+    powershell -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%~2' -OutFile '%LIB%\%~1'"
+)
+goto :eof

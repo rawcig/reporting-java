@@ -165,8 +165,6 @@
             <!-- Type: color-coded -->
             <textField>
                 <reportElement x="293" y="0" width="50" height="18"/>
-                <style conditionExpression="&quot;Assignment&quot;.equals($F{record_type})" style="TypeAssignment"/>
-                <style conditionExpression="&quot;Exam&quot;.equals($F{record_type})" style="TypeExam"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{record_type}]]></textFieldExpression>
             </textField>
@@ -196,9 +194,6 @@
             <!-- Status: color-coded -->
             <textField>
                 <reportElement x="653" y="0" width="55" height="18"/>
-                <style conditionExpression="&quot;Passed&quot;.equals($F{submission_status})" style="Passed"/>
-                <style conditionExpression="&quot;Failed&quot;.equals($F{submission_status})" style="Failed"/>
-                <style conditionExpression="&quot;Submitted&quot;.equals($F{submission_status}) || &quot;Graded&quot;.equals($F{submission_status})" style="Submitted"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{submission_status}]]></textFieldExpression>
             </textField>

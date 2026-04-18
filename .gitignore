@@ -40,3 +40,18 @@ build/
 .qwen/
 run_output.txt
 run_with_log.bat
+DBTest.*
+ViewerTest.*
+
+### Secrets & Config ###
+src/main/resources/db.properties
+!src/main/resources/db.properties.example
+src/main/resources/reports-backup01/*
+src/main/resources/reports-backup02/*
+src/main/resources/reports copy/*
+src/main/resources/logback.xml
+
+### Lib (downloaded JARs) ###
+lib/*.jar
+!lib/.gitkeep
+

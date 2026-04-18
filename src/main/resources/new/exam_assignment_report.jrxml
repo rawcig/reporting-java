@@ -1,0 +1,156 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ExamAssignmentReport" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c2f1c261-a19f-4f72-b891-0f3b8b806b7f">
+	<style name="Title" forecolor="#4A148C" fontSize="20.0" bold="true"/>
+	<style name="ColumnHeader" forecolor="#FFFFFF" backcolor="#6A1B9A" hTextAlign="Center" vTextAlign="Middle" hImageAlign="Center" vImageAlign="Middle" fontSize="9.0" bold="true"/>
+	<style name="Detail" forecolor="#333333" fontSize="9.0"/>
+	<style name="DetailAlt" forecolor="#333333" backcolor="#F3E5F5" fontSize="9.0"/>
+	<style name="Footer" forecolor="#78909C" fontSize="8.0"/>
+	<style name="SummaryLabel" forecolor="#4A148C" fontSize="11.0" bold="true"/>
+	<style name="SummaryValue" forecolor="#6A1B9A" fontSize="11.0" bold="true"/>
+	<style name="TypeAssignment" forecolor="#1565C0" fontSize="8.0" bold="true"/>
+	<style name="TypeExam" forecolor="#C62828" fontSize="8.0" bold="true"/>
+	<style name="Passed" forecolor="#2E7D32" fontSize="8.0"/>
+	<style name="Failed" forecolor="#C62828" fontSize="8.0"/>
+	<style name="Submitted" forecolor="#F57F17" fontSize="8.0"/>
+	<field name="student_code" class="java.lang.String"/>
+	<field name="student_name" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
+	<field name="course_code" class="java.lang.String"/>
+	<field name="course_name" class="java.lang.String"/>
+	<field name="record_type" class="java.lang.String"/>
+	<field name="title" class="java.lang.String"/>
+	<field name="due_date" class="java.sql.Date"/>
+	<field name="total_marks" class="java.math.BigDecimal"/>
+	<field name="marks_obtained" class="java.math.BigDecimal"/>
+	<field name="percentage" class="java.math.BigDecimal"/>
+	<field name="submission_status" class="java.lang.String"/>
+	<field name="submission_date" class="java.sql.Timestamp"/>
+	<field name="feedback" class="java.lang.String"/>
+	<title height="80">
+		<element kind="rectangle" uuid="9c1e5f32-4b1a-47ad-9c66-43ce779a9779" mode="Opaque" x="0" y="0" width="802" height="4" backcolor="#6A1B9A"/>
+		<element kind="textField" uuid="322418a5-ba33-4b82-8195-a469f590348f" x="20" y="12" width="500" height="20" forecolor="#546E7A" fontSize="11.0" bold="true">
+			<expression><![CDATA["Training System"]]></expression>
+		</element>
+		<element kind="textField" uuid="dfb9a334-373d-4cd1-a2e8-e17096820c94" x="20" y="32" width="600" height="30" forecolor="#4A148C" fontSize="20.0" bold="true">
+			<expression><![CDATA["Exam & Assignment Performance Report"]]></expression>
+		</element>
+		<element kind="textField" uuid="a3b9f069-0861-46e5-8e5c-d8993896c5b4" x="580" y="38" width="200" height="20" forecolor="#78909C" fontSize="10.0" pattern="dd MMMM yyyy, HH:mm" hTextAlign="Right">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="line" uuid="40690308-0b17-4022-89aa-bda4f272594a" x="20" y="68" width="762" height="1" forecolor="#B0BEC5"/>
+	</title>
+	<pageHeader height="38">
+		<element kind="staticText" uuid="38691893-d3ba-4ebb-b0c5-bd6feb57c392" x="0" y="0" width="28" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[#]]></text>
+		</element>
+		<element kind="staticText" uuid="54a62694-ada8-4e77-9031-e5f843467994" x="28" y="0" width="60" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Student_ID]]></text>
+		</element>
+		<element kind="staticText" uuid="8a94f723-cf95-448f-ba8f-e765e440b134" x="193" y="0" width="35" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Gender]]></text>
+		</element>
+		<element kind="staticText" uuid="a36e55ce-3a44-46a1-8a1a-8edd878333ad" x="228" y="0" width="65" height="22" forecolor="#030202" style="ColumnHeader">
+			<text><![CDATA[Course]]></text>
+		</element>
+		<element kind="staticText" uuid="bcb8c840-7170-4356-87fb-dc61df5f6629" x="293" y="0" width="50" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Type]]></text>
+		</element>
+		<element kind="staticText" uuid="50e7e3ca-aaca-4a92-a985-1987e8a0caea" x="343" y="0" width="116" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Title]]></text>
+		</element>
+		<element kind="staticText" uuid="c1516ec8-f577-40b9-adc5-d4de10912381" x="459" y="0" width="56" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Due Date]]></text>
+		</element>
+		<element kind="staticText" uuid="b0098d45-5b42-468f-813b-26e84e96c008" x="515" y="0" width="40" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Total]]></text>
+		</element>
+		<element kind="staticText" uuid="42e12a5f-1a9e-4bea-9cca-5c184569e63b" x="555" y="0" width="40" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Score]]></text>
+		</element>
+		<element kind="staticText" uuid="880c7201-0c0d-4b59-b522-b31cb58051a0" x="595" y="0" width="45" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[%]]></text>
+		</element>
+		<element kind="staticText" uuid="74c124c2-85ad-42e2-b64e-5811dd67ba97" x="640" y="0" width="55" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Status]]></text>
+		</element>
+		<element kind="staticText" uuid="fc97abc8-6b8d-4df6-a8b2-b6c8bddc705c" x="695" y="0" width="54" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Submitted]]></text>
+		</element>
+		<element kind="staticText" uuid="3c7cd895-44ff-476c-9e27-0fce96cc30af" x="749" y="0" width="52" height="22" forecolor="#030303" style="ColumnHeader">
+			<text><![CDATA[Feedback]]></text>
+		</element>
+		<element kind="staticText" uuid="ab50ad8d-0d3f-42d7-b671-b0bf6e50767a" x="88" y="0" width="105" height="22" forecolor="#030000" style="ColumnHeader">
+			<text><![CDATA[Student Name]]></text>
+		</element>
+	</pageHeader>
+	<detail>
+		<band height="18">
+			<element kind="rectangle" uuid="fed6c38e-faf7-4f69-b6c2-0137fd9372b2" x="0" y="0" width="802" height="18" style="DetailAlt">
+				<printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+			</element>
+			<element kind="textField" uuid="22f73f37-4038-4a41-8a73-7ca78c346cd4" x="0" y="0" width="28" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+			</element>
+			<element kind="textField" uuid="009cb2e4-9285-4a1a-a16e-338770605e3a" x="28" y="0" width="60" height="18" style="Detail">
+				<expression><![CDATA[$F{student_code}]]></expression>
+			</element>
+			<element kind="textField" uuid="c75fe702-c590-40f3-b111-3b99169648b4" x="88" y="0" width="105" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{student_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="85b20342-ad32-48b7-a1f3-3fe9b1230599" x="193" y="0" width="35" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{gender}]]></expression>
+			</element>
+			<element kind="textField" uuid="146f69fb-bce4-4170-810c-37effd185191" x="228" y="0" width="65" height="18" style="Detail">
+				<expression><![CDATA[$F{course_code}]]></expression>
+			</element>
+			<element kind="textField" uuid="ce85de27-41fa-4422-b810-22d291405981" x="293" y="0" width="50" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{record_type}]]></expression>
+			</element>
+			<element kind="textField" uuid="03ac45d1-e220-4ea7-af8b-461a558617d6" x="343" y="0" width="116" height="18" style="Detail">
+				<expression><![CDATA[$F{title}]]></expression>
+			</element>
+			<element kind="textField" uuid="55a0c98a-8a7b-4ed2-a86b-7c6e5efa0d6c" x="460" y="0" width="55" height="18" pattern="dd/MM/yyyy" style="Detail">
+				<expression><![CDATA[$F{due_date}]]></expression>
+			</element>
+			<element kind="textField" uuid="72b9cb0f-d170-4c81-887d-5fa0bd943143" x="515" y="0" width="40" height="18" hTextAlign="Right" style="Detail">
+				<expression><![CDATA[$F{total_marks}]]></expression>
+			</element>
+			<element kind="textField" uuid="f9be6619-c9ca-44c6-b114-a8c514a2909c" x="555" y="0" width="40" height="18" hTextAlign="Right" style="Detail">
+				<expression><![CDATA[$F{marks_obtained} != null ? $F{marks_obtained} : "-"]]></expression>
+			</element>
+			<element kind="textField" uuid="22fba697-f6da-4153-be70-186d8b8c4aaa" x="595" y="0" width="45" height="18" pattern="#0.0'%'" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{percentage} != null ? $F{percentage} : java.math.BigDecimal.ZERO]]></expression>
+			</element>
+			<element kind="textField" uuid="5e190789-22b1-4339-8348-5f8c51cd0083" x="640" y="0" width="54" height="18" hTextAlign="Center" style="Detail">
+				<expression><![CDATA[$F{submission_status}]]></expression>
+			</element>
+			<element kind="textField" uuid="ff8c650d-4ede-48c3-8b5d-806724191cfb" x="695" y="0" width="54" height="18" pattern="dd/MM/yyyy" style="Detail">
+				<expression><![CDATA[$F{submission_date} != null ? $F{submission_date} : $F{due_date}]]></expression>
+			</element>
+			<element kind="textField" uuid="7b949b71-9efe-4d42-9b3f-a91088ae546b" x="749" y="0" width="53" height="18" style="Detail">
+				<expression><![CDATA[$F{feedback} != null && $F{feedback}.length() > 15 ? $F{feedback}.substring(0, 12) + "..." : ($F{feedback} != null ? $F{feedback} : "-")]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="25">
+		<element kind="line" uuid="1936a33b-a882-45f8-8a64-9d846b030ed8" x="0" y="0" width="802" height="1" forecolor="#B0BEC5"/>
+		<element kind="textField" uuid="cfa561bc-3321-4ba1-aa11-8e416168240d" x="0" y="4" width="400" height="16" style="Footer">
+			<expression><![CDATA["Generated: " + new java.util.Date()]]></expression>
+		</element>
+		<element kind="textField" uuid="d5705377-1a6e-475d-8f4b-6a81b56f49b2" x="400" y="4" width="402" height="16" hTextAlign="Right" style="Footer">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></expression>
+		</element>
+		<element kind="textField" uuid="3586efe3-35b5-482f-9664-229228183cae" x="400" y="4" width="402" height="16" evaluationTime="Report" hTextAlign="Right" style="Footer">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary height="35">
+		<element kind="line" uuid="c031a856-dceb-418c-ae3c-a5e4d3b96beb" x="20" y="0" width="762" height="1" forecolor="#B0BEC5"/>
+		<element kind="staticText" uuid="777990e4-e542-413e-b9ab-b4fb9f9b7320" x="20" y="6" width="150" height="18" style="SummaryLabel">
+			<text><![CDATA[Total Records:]]></text>
+		</element>
+		<element kind="textField" uuid="9c081798-1c89-4c56-9219-1da88f74628a" x="175" y="6" width="40" height="18" style="SummaryValue">
+			<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+		</element>
+	</summary>
+</jasperReport>
